@@ -118,4 +118,123 @@ class BankDataService
         // Simulación de parsing específico para ING
         return $response;
     }
+
+    private function fetchFromApi(Bank $bank, array $criteria): ?array
+    {
+        try {
+            // Llamar a la API específica de cada banco
+            return match($bank->slug) {
+                'ing' => $this->fetchFromINGApi($bank, $criteria),
+                'bbva' => $this->fetchFromBBVAApi($bank, $criteria),
+                'santander' => $this->fetchFromSantanderApi($bank, $criteria),
+                'lacaixa' => $this->fetchFromLaCaixaApi($bank, $criteria),
+                default => $this->fetchGenericApi($bank, $criteria),
+            };
+            
+        } catch (\Exception $e) {
+            Log::error("API exception for {$bank->name}: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    private function fetchFromINGApi(Bank $bank, array $criteria): ?array
+    {
+        // Ejemplo de integración con API de ING (si existiera)
+        $response = Http::timeout(15)
+            ->withHeaders([
+                'X-ING-ApplicationID' => config('services.banks.ing.app_id'),
+                'X-ING-APIKey' => config('services.banks.ing.api_key'),
+                'Accept' => 'application/json',
+            ])
+            ->post('https://api.ing.es/mortgage/v1/simulate', [
+                'amount' => $criteria['loan_amount'],
+                'propertyValue' => $criteria['property_value'],
+                'years' => $criteria['term_years'],
+                'customer' => [
+                    'age' => $criteria['age'],
+                    'monthlyIncome' => $criteria['income'],
+                    'employmentType' => $this->mapContractType($criteria['contract_type']),
+                ],
+            ]);
+            
+        if ($response->successful()) {
+            $data = $response->json();
+            return [
+                [
+                    'product_id' => $data['productId'] ?? null,
+                    'name' => $data['productName'] ?? 'Hipoteca NARANJA',
+                    'fixed_rate' => $data['fixedRate'] ?? null,
+                    'variable_rate' => $data['variableRate'] ?? null,
+                    'monthly_payment' => $data['monthlyPayment'] ?? null,
+                    'tae' => $data['annualRate'] ?? null,
+                    'requirements' => $data['requirements'] ?? [],
+                ],
+            ];
+        }
+        
+        return null;
+    }
+    
+    private function fetchFromBBVAApi(Bank $bank, array $criteria): ?array
+    {
+        // BBVA Open Platform API
+        $response = Http::timeout(15)
+            ->withToken(config('services.banks.bbva.access_token'))
+            ->post('https://apis.bbva.com/products-services/mortgages/v1/simulations', [
+                'loan' => [
+                    'amount' => $criteria['loan_amount'],
+                    'term' => $criteria['term_years'] * 12, // BBVA usa meses
+                ],
+                'property' => [
+                    'value' => $criteria['property_value'],
+                    'type' => 'RESIDENTIAL',
+                ],
+                'applicant' => [
+                    'age' => $criteria['age'],
+                    'income' => [
+                        'amount' => $criteria['income'],
+                        'frequency' => 'MONTHLY',
+                    ],
+                ],
+            ]);
+            
+        if ($response->successful()) {
+            return $this->parseBBVAResponse($response->json());
+        }
+        
+        return null;
+    }
+    
+    private function fetchGenericApi(Bank $bank, array $criteria): ?array
+    {
+        // Implementación genérica para bancos con API estándar
+        $response = Http::timeout(10)
+            ->withHeaders($this->getApiHeaders($bank))
+            ->post($bank->api_endpoint, [
+                'loan_amount' => $criteria['loan_amount'],
+                'property_value' => $criteria['property_value'],
+                'term_years' => $criteria['term_years'],
+                'applicant' => [
+                    'age' => $criteria['age'],
+                    'income' => $criteria['income'],
+                    'contract_type' => $criteria['contract_type'],
+                ],
+            ]);
+        
+        if ($response->successful()) {
+            return $this->parseApiResponse($bank->slug, $response->json());
+        }
+        
+        return null;
+    }
+    
+    private function mapContractType(string $type): string
+    {
+        return match($type) {
+            'permanent' => 'PERMANENT',
+            'temporary' => 'TEMPORARY',
+            'freelance' => 'SELF_EMPLOYED',
+            default => 'OTHER',
+        };
+    }
 }

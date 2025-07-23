@@ -45,5 +45,26 @@ return [
             'api_url' => env('SANTANDER_API_URL'),
             'api_key' => env('SANTANDER_API_KEY'),
         ],
+        'ing' => [
+            'api_url' => env('ING_API_URL', 'https://api.ing.es/mortgage/v1'),
+            'app_id' => env('ING_APP_ID'),
+            'api_key' => env('ING_API_KEY'),
+        ],
+        'bbva' => [
+            'api_url' => env('BBVA_API_URL', 'https://apis.bbva.com'),
+            'client_id' => env('BBVA_CLIENT_ID'),
+            'client_secret' => env('BBVA_CLIENT_SECRET'),
+            'access_token' => env('BBVA_ACCESS_TOKEN'),
+        ],
+        'sabadell' => [
+            'api_url' => env('SABADELL_API_URL'),
+            'api_key' => env('SABADELL_API_KEY'),
+        ],
+    ],
+    
+    'mortgage' => [
+        'use_scraping' => env('MORTGAGE_USE_SCRAPING', true),
+        'cache_ttl' => env('MORTGAGE_CACHE_TTL', 3600), // 1 hora
+        'rate_limit' => env('MORTGAGE_RATE_LIMIT', 60), // requests por minuto
     ],
 ];
