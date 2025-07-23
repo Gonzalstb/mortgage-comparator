@@ -8,7 +8,7 @@
             <p class="text-gray-700 mb-6">Compara productos hipotecarios de diferentes bancos y encuentra la mejor opción para ti. Simula, guarda tus favoritos y gestiona tu perfil de forma sencilla y segura.</p>
             <div class="flex flex-col sm:flex-row gap-4">
                 <a href="{{ route('login') }}" class="w-full sm:w-auto text-white bg-accent hover:bg-gold font-semibold rounded-lg px-6 py-3 text-center shadow-elegant transition">Iniciar sesión</a>
-                <a href="{{ route('register') }}" class="w-full sm:w-auto text-accent border border-accent hover:bg-accent hover:text-white font-semibold rounded-lg px-6 py-3 text-center shadow-elegant transition">Crear cuenta</a>
+                {{-- <a href="{{ route('register') }}" class="w-full sm:w-auto text-accent border border-accent hover:bg-accent hover:text-white font-semibold rounded-lg px-6 py-3 text-center shadow-elegant transition">Crear cuenta</a> --}}
             </div>
         </div>
     </div>

@@ -16,9 +16,9 @@
             <a href="{{ route('login') }}" class="hidden md:inline-block">
                 <x-secondary-button class="px-5 py-2 rounded-lg">Iniciar sesión</x-secondary-button>
             </a>
-            <a href="{{ route('register') }}" class="hidden md:inline-block">
-                <x-primary-button class="px-5 py-2 rounded-lg bg-accent hover:bg-gold">Registrarse</x-primary-button>
-            </a>
+            {{-- <a href="{{ route('register') }}" class="hidden md:inline-block"> --}}
+                {{-- <x-primary-button class="px-5 py-2 rounded-lg bg-accent hover:bg-gold">Registrarse</x-primary-button> --}}
+            {{-- </a> --}}
             <a href="{{ route('simulations.create') }}" class="md:ml-4">
                 <x-primary-button class="px-5 py-2 rounded-lg bg-accent hover:bg-gold">Simular mi hipoteca</x-primary-button>
             </a>
@@ -41,9 +41,9 @@
                     <a href="{{ route('simulations.create') }}">
                         <x-primary-button class="px-8 py-4 text-lg rounded-xl bg-accent hover:bg-gold shadow-elegant font-bold uppercase tracking-wide">Simular mi hipoteca</x-primary-button>
                     </a>
-                    <a href="{{ route('register') }}">
-                        <x-secondary-button class="px-8 py-4 text-lg rounded-xl font-bold uppercase tracking-wide">Registrarse</x-secondary-button>
-                    </a>
+                    {{-- <a href="{{ route('register') }}"> --}}
+                        {{-- <x-secondary-button class="px-8 py-4 text-lg rounded-xl font-bold uppercase tracking-wide">Registrarse</x-secondary-button> --}}
+                    {{-- </a> --}}
                 </div>
             </div>
             {{-- Columna derecha: formulario rápido --}}

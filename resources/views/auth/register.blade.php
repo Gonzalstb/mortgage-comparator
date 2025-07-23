@@ -1,5 +1,7 @@
 <x-guest-layout>
+    {{--
     <form method="POST" action="{{ route('register') }}" class="max-w-md mx-auto">
+    --}}
         @csrf
         <h2 class="text-2xl font-bold mb-8 text-center text-accent tracking-tight">Crear cuenta</h2>
         <!-- Name -->
@@ -36,5 +38,7 @@
             </a>
         </div>
         <button type="submit" class="w-full text-white bg-accent hover:bg-gold focus:ring-4 focus:outline-none focus:ring-accent font-semibold rounded-lg text-base px-5 py-3 text-center shadow-elegant transition-all duration-200">Registrarse</button>
+    {{--
     </form>
+    --}}
 </x-guest-layout>
